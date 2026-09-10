@@ -32,15 +32,15 @@ In the Render service settings:
 | Field | Value |
 | --- | --- |
 | Runtime | Node |
-| **Build Command** | `npm install --include=dev && npm run build` |
+| **Build Command** | `npm install` |
 | **Start Command** | `node dist/index.js` |
 | Node version | `20` (`NODE_VERSION=20.18.0`) |
+
+`postinstall` runs `tsc` after install, which creates `dist/index.js`. TypeScript is a production dependency so Render's default `npm install` is enough.
 
 If this GitHub repo is the full SELLlIX monorepo (frontend + backend), set **Root Directory** to `backend`.
 
 Also set these environment variables: `MONGODB_URI`, `JWT_SECRET`, `JWT_REFRESH_SECRET`, `FRONTEND_URL`, `NODE_ENV=production`. Render injects `PORT` automatically.
-
-`NPM_CONFIG_PRODUCTION=false` is required so TypeScript (`devDependency`) is installed and `tsc` can create `dist/index.js`.
 
 ## Scripts
 

@@ -3,14 +3,12 @@ services:
     name: selllix-api
     runtime: node
     plan: free
-    buildCommand: npm install --include=dev && npm run build
+    buildCommand: npm install
     startCommand: node dist/index.js
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: NPM_CONFIG_PRODUCTION
-        value: "false"
       - key: NODE_VERSION
         value: "20.18.0"
       - key: MONGODB_URI
