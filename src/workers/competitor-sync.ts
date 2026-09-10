@@ -1,0 +1,1 @@
+export { runCompetitorSync } from "./jobs";
