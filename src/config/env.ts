@@ -8,6 +8,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(4000),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   MONGODB_URI: z.string().optional().default(""),
+  MONGODB_DB: z.string().optional().default("selllix"),
   JWT_SECRET: z.string().min(16).default("selllix-dev-access-secret-change-in-production-32"),
   JWT_REFRESH_SECRET: z.string().min(16).default("selllix-dev-refresh-secret-change-in-production-32"),
   ACCESS_TOKEN_TTL: z.string().default("15m"),

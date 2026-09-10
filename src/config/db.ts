@@ -93,21 +93,36 @@ export async function connectDb(): Promise<void> {
   memoryMode = true;
 
   if (!env.MONGODB_URI) {
-    console.log("[db] MONGODB_URI empty — using in-memory store (demo mode)");
+    if (env.NODE_ENV === "production") {
+      throw new Error("MONGODB_URI is required in production");
+    }
+    console.log("[db] MONGODB_URI empty — using in-memory store (users will NOT appear in Atlas)");
     return;
   }
 
   try {
-    await mongoose.connect(env.MONGODB_URI, { serverSelectionTimeoutMS: 4000 });
+    await mongoose.connect(env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 15000,
+      dbName: env.MONGODB_DB,
+    });
     memoryMode = false;
     await seedMongoIfEmpty();
     await ensurePlatformOwner();
-    console.log("[db] Connected to MongoDB");
+    console.log(`[db] Connected to MongoDB database="${mongoose.connection.name}"`);
   } catch (error) {
-    memoryMode = true;
     const message = error instanceof Error ? error.message : "unknown error";
-    console.warn(`[db] MongoDB connection failed (${message}) — falling back to in-memory store`);
+    if (env.NODE_ENV === "production") {
+      throw new Error(`MongoDB connection failed: ${message}`);
+    }
+    memoryMode = true;
+    console.warn(
+      `[db] MongoDB connection failed (${message}) — falling back to in-memory store. Registered users will NOT appear in Atlas.`,
+    );
   }
+}
+
+export function getDbName(): string {
+  return memoryMode ? "memory" : mongoose.connection.name || env.MONGODB_DB;
 }
 
 export async function disconnectDb(): Promise<void> {
